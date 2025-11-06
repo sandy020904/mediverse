@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - MediVerse</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Welcome, {{ user.name }} 👋</h1>
+            <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+        </header>
+        
+        <div class="dashboard-grid">
+            <div class="dashboard-card" onclick="location.href='/symptom_checker'">
+                <h3>🤖 Symptom Checker</h3>
+                <p>AI-powered disease prediction</p>
+            </div>
+            
+            <div class="dashboard-card" onclick="showAppointmentForm()">
+                <h3>📅 Book Appointment</h3>
+                <p>Schedule with top doctors</p>
+            </div>
+            
+            <div class="dashboard-card" onclick="viewMedicalHistory()">
+                <h3>📋 Prescription and Test Analysis</h3>
+                <p>Know about your px and Test results</p>
+            </div>
+            
+            <div class="dashboard-card" onclick="emergencyConnect()">
+                <h3>🚨 Emergency</h3>
+                <p>Connect to nearby hospitals</p>
+            </div>
+            <div class="dashboard-card" onclick="showFoodRecommendations()">
+                <h3>🍎 Food & Nutrition</h3>
+                 <p>Personalized diet plans</p>
+            </div>
+            <div class="dashboard-card" onclick="showInsuranceClaims()">
+                <h3>🏥 Insurance Claims</h3>
+                <p>File and track claims</p>
+            </div>
+            <div class="dashboard-card" onclick="showPostMedicationCare()">
+                <h3>💊 Post-Medication Care</h3>
+                <p>Recovery and follow-up plans</p>
+            </div>
+        </div>
+        
+        <div id="appointment-form" class="form-container" style="display:none;">
+            <h3>📅 Book Appointment with Top Doctors</h3>
+            <div class="location-permission">
+                <p>📍 We need your location to find nearby doctors</p>
+                <button onclick="getUserLocation()" class="btn location-btn">Allow Location Access</button>
+            </div>
+            
+            <div id="doctor-selection" style="display:none;">
+                <div class="search-filters">
+                    <select id="doctor-specialty" onchange="filterDoctors()">
+                        <option value="">All Specialties</option>
+                        <option value="General Physician">General Physician</option>
+                        <option value="Cardiologist">Cardiologist</option>
+                        <option value="Dermatologist">Dermatologist</option>
+                        <option value="Pediatrician">Pediatrician</option>
+                        <option value="Neurologist">Neurologist</option>
+                        <option value="Orthopedic">Orthopedic</option>
+                    </select>
+                    <select id="sort-by" onchange="sortDoctors()">
+                        <option value="rating">Sort by: Highest Rating</option>
+                        <option value="distance">Sort by: Nearest</option>
+                        <option value="availability">Sort by: Available Today</option>
+                    </select>
+                </div>
+                
+                <div id="doctors-list" class="doctors-list">
+    <!-- Doctors table will be populated here by JavaScript -->
+</div>
+                
+                <div id="selected-doctor-info" style="display:none; margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                    <h4>Selected Doctor: <span id="selected-doctor-name"></span></h4>
+                    <p><strong>Specialty:</strong> <span id="selected-doctor-specialty"></span></p>
+                    <p><strong>Rating:</strong> <span id="selected-doctor-rating"></span></p>
+                    <p><strong>Distance:</strong> <span id="selected-doctor-distance"></span></p>
+                    
+                    <form id="appointmentForm">
+                        <input type="hidden" id="selected-doctor-id" name="doctor_id">
+                        <input type="date" name="date" id="appointment-date" required min="{{ today }}">
+                        <select name="time_slot" id="time-slot" required>
+                            <option value="">Select Time Slot</option>
+                            <!-- Time slots will be populated by JavaScript -->
+                        </select>
+                        <button type="submit" class="btn">Confirm Booking</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        {% if user.medical_history %}
+        <div class="medical-history">
+            <h3>📊 Recent Medical History</h3>
+            {% for record in user.medical_history[-3:] %}
+            <div class="history-record">
+                <p><strong>Date:</strong> {{ record.date }}</p>
+                <p><strong>Symptoms:</strong> {{ record.symptoms|join(', ') }}</p>
+                {% if record.possible_conditions %}
+                <p><strong>Possible Conditions:</strong> 
+                    {% for condition in record.possible_conditions[:2] %}
+                    {{ condition.disease }} ({{ condition.probability }}%){% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+        // Set today's date as minimum for appointment date
+        document.getElementById('appointment-date').min = new Date().toISOString().split('T')[0];
+        
+        function viewMedicalHistory() {
+            alert('📋 Your medical history is shown below.\n\nIn full implementation, this would show detailed records with prescriptions and lab results.');
+        }
+    </script>
+</body>
+</html>

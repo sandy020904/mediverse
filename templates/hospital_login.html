@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Login - MediVerse</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏥 Hospital Login</h1>
+            <a href="/" class="back-btn">← Back to Home</a>
+        </header>
+        
+        <div class="login-form">
+            <form method="POST">
+                <h3>Hospital Staff Login</h3>
+                {% if error %}
+                <div class="error-message">{{ error }}</div>
+                {% endif %}
+                <input type="text" name="username" placeholder="Username" value="hospital" required>
+                <input type="password" name="password" placeholder="Password" value="hospital123" required>
+                <button type="submit" class="btn">Login</button>
+            </form>
+            <p class="note">🔐 Default credentials: hospital/hospital123</p>
+        </div>
+    </div>
+</body>
+</html>

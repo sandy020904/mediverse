@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Symptom Checker - MediVerse</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 Symptom Checker</h1>
+            <a href="{{ url_for('user_dashboard') }}">← Back to Dashboard</a>
+        </header>
+        
+        <form method="POST">
+            <div class="symptom-selection">
+                <h3>Select your symptoms:</h3>
+                <div class="symptoms-grid">
+                    {% for symptom in symptoms_list %}
+                    <label class="symptom-checkbox">
+                        <input type="checkbox" name="symptoms" value="{{ symptom }}">
+                        {{ symptom }}
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <button type="submit" class="btn">Analyze Symptoms</button>
+        </form>
+        
+        {% if submitted %}
+        <div class="results">
+            <h3>🔍 Analysis Results</h3>
+            {% if results %}
+                {% for condition in results %}
+                <div class="condition-card">
+                    <h4>{{ condition.disease }} ({{ condition.probability }}% probability)</h4>
+                    
+                    {% if condition.treatment %}
+                    <div class="treatment-info">
+                        <p><strong>🩹 First Aid:</strong> {{ condition.treatment.first_aid }}</p>
+                        <p><strong>💊 Medication:</strong> {{ condition.treatment.medication }}</p>
+                        <p><strong>🍎 Diet:</strong> {{ condition.treatment.diet }}</p>
+                        <p><strong>🏃 Exercise:</strong> {{ condition.treatment.exercise }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                
+                <div class="recommendation">
+                    <p><strong>💡 Recommendation:</strong> 
+                    {% if results[0].probability > 70 %}
+                    Consider consulting a doctor for proper diagnosis and treatment.
+                    {% else %}
+                    Monitor your symptoms and consult a doctor if they persist or worsen.
+                    {% endif %}
+                    </p>
+                </div>
+            {% else %}
+                <p>No specific conditions identified based on your symptoms. Please consult a healthcare professional for accurate diagnosis.</p>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
